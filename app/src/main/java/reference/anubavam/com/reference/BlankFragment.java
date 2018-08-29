@@ -26,8 +26,9 @@ public class BlankFragment extends Fragment implements ProductAdapter.ProductCli
     private ProductAdapter mAdapter;
     private RecyclerView recyclerView;
     private int price = 0;
-    private int quantity = 0;
+    private int totalQuantity = 0;
     private int total = 0;
+    private Snackbar snackbar;
 
     public BlankFragment() {
         // Required empty public constructor
@@ -49,18 +50,27 @@ public class BlankFragment extends Fragment implements ProductAdapter.ProductCli
         recyclerView.setAdapter(mAdapter);
         prepareMovieData();
 
+        snackbar = Snackbar
+                .make(recyclerView, "", Snackbar.LENGTH_INDEFINITE)
+                .setAction("View Cart", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //TODO Need to navigate to view cart page
+                    }
+                });
+
         return view;
     }
 
     private void prepareMovieData() {
 
-        Product movie = new Product("Idly", 50, 0,"");
+        Product movie = new Product("Idly", 50, 0,"",0);
         movieList.add(movie);
 
-        movie = new Product("Dosai", 80, 0,"");
+        movie = new Product("Dosai", 80, 0,"",0);
         movieList.add(movie);
 
-        movie = new Product("Masala Dosai", 100, 0,"");
+        movie = new Product("Masala Dosai", 100, 0,"",0);
         movieList.add(movie);
 
         mAdapter.notifyDataSetChanged();
@@ -78,24 +88,32 @@ public class BlankFragment extends Fragment implements ProductAdapter.ProductCli
     }
 
     @Override
-    public void onSelectedProduct(Product product) {
+    public void onProductAdd(Product product) {
         Log.i("Product ",""+product.getQuantity());
-        quantity = product.getQuantity();
+        totalQuantity = totalQuantity + 1;
         price = product.getPrice();
-        total = total + (quantity * price);
-        String displayText = quantity + "Item | \u20B9 "+total;
-        Snackbar snackbar = Snackbar
-                .make(recyclerView, displayText, Snackbar.LENGTH_INDEFINITE)
-                .setAction("View Cart", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+        total = total + price;
+        snackbar.show();
+        showSnackBar(totalQuantity + " Item | \u20B9 "+total);
+    }
 
-                    }
-                });
-        snackbar.setActionTextColor(Color.RED);
+    @Override
+    public void onProductRemove(Product product) {
+        totalQuantity = totalQuantity - 1;
+        price = product.getPrice();
+        total = total - price;
+        if(totalQuantity == 0){
+            snackbar.dismiss();
+        }else{
+            showSnackBar(totalQuantity + " Item | \u20B9 "+total);
+        }
+    }
+
+    private void showSnackBar(String message){
+        snackbar.setText(message);
+        snackbar.setActionTextColor(getResources().getColor(R.color.colorAccent));
         View sbView = snackbar.getView();
         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.YELLOW);
-        snackbar.show();
     }
 }

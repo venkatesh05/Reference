@@ -52,6 +52,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         final Product product = productList.get(position);
         final int[] quantity = {0};
+        int total = 0;
         holder.title.setText(product.getTitle());
         holder.price.setText("Rs. "+product.getPrice());
         holder.add.setOnClickListener(new View.OnClickListener() {
@@ -62,7 +63,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
                 quantity[0] = 1;
                 holder.quantityText.setText(""+ quantity[0]);
                 product.setQuantity(quantity[0]);
-                productClickListener.onSelectedProduct(product);
+                productClickListener.onProductAdd(product);
             }
         });
 
@@ -72,7 +73,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
                 quantity[0] = quantity[0] + 1;
                 holder.quantityText.setText(""+ quantity[0]);
                 product.setQuantity(quantity[0]);
-                productClickListener.onSelectedProduct(product);
+                productClickListener.onProductAdd(product);
             }
         });
 
@@ -82,6 +83,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
                 quantity[0] = quantity[0] - 1;
                 holder.quantityText.setText(""+ quantity[0]);
                 product.setQuantity(quantity[0]);
+                productClickListener.onProductRemove(product);
                 if(quantity[0] == 0){
                     holder.quantitylayout.setVisibility(View.GONE);
                     holder.add.setVisibility(View.VISIBLE);
@@ -97,7 +99,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
 
     public interface ProductClickListener {
 
-        void onSelectedProduct(Product product);
+        void onProductAdd(Product product);
+        void onProductRemove(Product product);
 
     }
 }

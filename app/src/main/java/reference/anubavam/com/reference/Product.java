@@ -2,16 +2,17 @@ package reference.anubavam.com.reference;
 
 public class Product {
     private String title, image;
-    private int price, quantity;
+    private int price, quantity, total;
 
     public Product() {
     }
 
-    public Product(String title, int price, int quantity, String image) {
+    public Product(String title, int price, int quantity, String image, int total) {
         this.title = title;
         this.price = price;
         this.quantity = quantity;
         this.image = image;
+        this.total = total;
     }
 
 
@@ -45,5 +46,13 @@ public class Product {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
     }
 }
